@@ -1,5 +1,7 @@
 package com.iphayao.linebot;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.ByteStreams;
 import com.linecorp.bot.client.LineMessagingClient;
 import com.linecorp.bot.client.MessageContentResponse;
@@ -15,15 +17,15 @@ import com.linecorp.bot.model.response.BotApiResponse;
 import com.linecorp.bot.spring.boot.annotation.EventMapping;
 import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 
+import entity.LineRegisterObject;
 import lombok.NonNull;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Base64Utils;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UncheckedIOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
@@ -32,6 +34,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 @Slf4j
 @LineMessageHandler
@@ -96,8 +100,8 @@ public class LineBotController {
 
         log.info("Got text message from %s : %s", replyToken, text);
 
-        switch (text) {
-            case "Profile": {
+        switch (text.toUpperCase()) {
+            case "PROFILE": {
                 String userId = event.getSource().getUserId();
                 if(userId != null) {
                     lineMessagingClient.getProfile(userId)
@@ -113,6 +117,12 @@ public class LineBotController {
                                 ));
                             });
                 }
+                break;
+            }
+            case "REGISTER" :
+            {
+                String userId = event.getSource().getUserId();
+                this._registerResponse(replyToken, userId);
                 break;
             }
             default:
@@ -195,5 +205,52 @@ public class LineBotController {
     public static class DownloadedContent {
         Path path;
         String uri;
+    }
+
+    @Autowired
+    private ObjectMapper objectMapper;
+    private  void _registerResponse(@NonNull String replyToken, @NonNull String uid) {
+        LineRegisterObject object = new LineRegisterObject();
+        object.setUid(uid);
+        try {
+            String objJson = objectMapper.writeValueAsString(object);
+            String compressRegisterObject = this.compress(objJson);
+            this.reply(replyToken, new TextMessage(objJson));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String compress(String str) throws IOException {
+        if (str == null || str.length() == 0) {
+            return str;
+        }
+        System.out.println("String length : " + str.length());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        GZIPOutputStream gzip = new GZIPOutputStream(out);
+        gzip.write(str.getBytes());
+        gzip.close();
+        String outStr = Base64Utils.encodeToString(out.toByteArray());
+        System.out.println("Output String lenght : " + outStr.length());
+        return outStr;
+    }
+
+    public String decompress(String str) throws IOException {
+        if (str == null || str.length() == 0) {
+            return str;
+        }
+        System.out.println("Input String length : " + str.length());
+
+        GZIPInputStream gis = new GZIPInputStream(new ByteArrayInputStream(Base64Utils.decodeFromString(str)));
+        BufferedReader bf = new BufferedReader(new InputStreamReader(gis, "ISO-8859-1"));
+        String outStr = "";
+        String line;
+        while ((line=bf.readLine())!=null) {
+            outStr += line;
+        }
+        System.out.println("Output String lenght : " + outStr.length());
+        return outStr;
     }
 }
