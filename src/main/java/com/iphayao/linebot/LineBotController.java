@@ -210,12 +210,27 @@ public class LineBotController {
     @Autowired
     private ObjectMapper objectMapper;
     private  void _registerResponse(@NonNull String replyToken, @NonNull String uid) {
+
+        final String registerURL = "https://www.coconutpayday.com/lr";
+        final String registerFieldName = "ref";
+
         LineRegisterObject object = new LineRegisterObject();
         object.setUid(uid);
         try {
             String objJson = objectMapper.writeValueAsString(object);
             String compressRegisterObject = this.compress(objJson);
-            this.reply(replyToken, new TextMessage(objJson));
+
+            String __registerUrl = registerURL + registerFieldName + "=" + compressRegisterObject;
+            //this.reply(replyToken, new TextMessage(compressRegisterObject));
+
+
+            // try image message
+            String __imgSmall = "https://www.smlaccount.com/assets/register-240.jpg";
+            //String registerURL = "https://www.smlaccount.com/assets/register-240.jpg";
+            ImageMessage __imageMessage = new ImageMessage(__registerUrl, __imgSmall);
+
+            this.reply(replyToken, __imageMessage);
+
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }catch (IOException e) {
