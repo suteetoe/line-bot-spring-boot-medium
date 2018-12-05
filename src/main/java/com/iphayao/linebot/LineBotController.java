@@ -211,7 +211,7 @@ public class LineBotController {
     private ObjectMapper objectMapper;
     private  void _registerResponse(@NonNull String replyToken, @NonNull String uid) {
 
-        final String registerURL = "https://www.coconutpayday.com/lr";
+        final String registerURL = "https://www.smlaccount.com/lr";
         final String registerFieldName = "ref";
 
         LineRegisterObject object = new LineRegisterObject();
