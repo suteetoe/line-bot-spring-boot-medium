@@ -263,10 +263,10 @@ public class LineBotController {
         ImagemapArea imagemapArea = new ImagemapArea(0,0, 240, 240);
         URIImagemapAction uriImagemapAction = new URIImagemapAction("https://www.smlaccount.com/assets/register-240.jpg", imagemapArea);
 
-        MessageImagemapAction messageImagemapAction = new MessageImagemapAction("show text", imagemapArea);
+//        MessageImagemapAction messageImagemapAction = new MessageImagemapAction("show text", imagemapArea);
 
-//        ac.add(uriImagemapAction);
-        ac.add(messageImagemapAction);
+        ac.add(uriImagemapAction);
+//        ac.add(messageImagemapAction);
 
         ImagemapBaseSize imagemapBaseSize = new ImagemapBaseSize(240, 240);
         ImagemapMessage imagemapMessage = new ImagemapMessage("https://www.smlaccount.com/assets/register-240.jpg?_ignored=", "regislink", imagemapBaseSize, ac);
