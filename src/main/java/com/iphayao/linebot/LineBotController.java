@@ -269,7 +269,7 @@ public class LineBotController {
         ac.add(messageImagemapAction);
 
         ImagemapBaseSize imagemapBaseSize = new ImagemapBaseSize(240, 240);
-        ImagemapMessage imagemapMessage = new ImagemapMessage("https://www.smlaccount.com/assets/register-240.jpg", "regislink", imagemapBaseSize, ac);
+        ImagemapMessage imagemapMessage = new ImagemapMessage("https://www.smlaccount.com/assets/register-240.jpg?_ignored=", "regislink", imagemapBaseSize, ac);
 
         this.reply(replyToken, imagemapMessage);
     }
