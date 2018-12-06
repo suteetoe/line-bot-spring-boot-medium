@@ -6,6 +6,8 @@ import com.google.common.io.ByteStreams;
 import com.linecorp.bot.client.LineMessagingClient;
 import com.linecorp.bot.client.MessageContentResponse;
 import com.linecorp.bot.model.ReplyMessage;
+import com.linecorp.bot.model.action.Action;
+import com.linecorp.bot.model.action.URIAction;
 import com.linecorp.bot.model.event.Event;
 import com.linecorp.bot.model.event.MessageEvent;
 import com.linecorp.bot.model.event.message.ImageMessageContent;
@@ -13,6 +15,7 @@ import com.linecorp.bot.model.event.message.LocationMessageContent;
 import com.linecorp.bot.model.event.message.StickerMessageContent;
 import com.linecorp.bot.model.event.message.TextMessageContent;
 import com.linecorp.bot.model.message.*;
+import com.linecorp.bot.model.message.template.ButtonsTemplate;
 import com.linecorp.bot.model.response.BotApiResponse;
 import com.linecorp.bot.spring.boot.annotation.EventMapping;
 import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
@@ -29,10 +32,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -123,6 +123,10 @@ public class LineBotController {
             {
                 String userId = event.getSource().getUserId();
                 this._registerResponse(replyToken, userId);
+                break;
+            }
+            case "IMAGE" : {
+                this._showImageLink(replyToken);
                 break;
             }
             default:
@@ -236,6 +240,20 @@ public class LineBotController {
         }catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void _showImageLink(@NonNull String replyToken){
+        String __imgSmall = "https://www.smlaccount.com/assets/register-240.jpg";
+
+        List<Action> listAction = new ArrayList<Action>();
+        URIAction uriAction = new URIAction("Get Link", "https://www.smlaccount.com/lr");
+
+
+        listAction.add(uriAction);
+
+        ButtonsTemplate buttonsTemplate = new ButtonsTemplate(__imgSmall, "", "", listAction);
+        TemplateMessage templateMessage = new TemplateMessage("IMG", buttonsTemplate);
+        this.reply(replyToken, templateMessage);
     }
 
     public String compress(String str) throws IOException {
