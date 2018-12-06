@@ -126,10 +126,6 @@ public class LineBotController {
                 this._registerResponse(replyToken, userId);
                 break;
             }
-            case "IMAGE" : {
-                this._showImageLink(replyToken);
-                break;
-            }
             default:
                 log.info("Return echo message %s : %s", replyToken, text);
                 this.replyText(replyToken, text);
@@ -232,46 +228,24 @@ public class LineBotController {
             // try image message
             String __imgSmall = "https://www.smlaccount.com/assets/register-240.jpg";
             //String registerURL = "https://www.smlaccount.com/assets/register-240.jpg";
-            ImageMessage __imageMessage = new ImageMessage(__registerUrl, __imgSmall);
+//            ImageMessage __imageMessage = new ImageMessage(__registerUrl, __imgSmall);
 
-            this.reply(replyToken, __imageMessage);
+
+            ImagemapArea imagemapArea = new ImagemapArea(0,0, 240, 240);
+            URIImagemapAction urlRegisterAction = new URIImagemapAction(registerURL, imagemapArea);
+
+            List<ImagemapAction> linkAction = Arrays.asList(urlRegisterAction);
+
+            ImagemapBaseSize imagemapBaseSize = new ImagemapBaseSize(240, 240);
+            ImagemapMessage __imageLink = new ImagemapMessage(__imgSmall+"?_ignored=", "register link", imagemapBaseSize, linkAction);
+
+            this.reply(replyToken, __imageLink);
 
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private void _showImageLink(@NonNull String replyToken){
-        String __imgSmall = "https://www.smlaccount.com/assets/register-240.jpg";
-
-//        List<Action> listAction = new ArrayList<Action>();
-//        URIAction uriAction = new URIAction("Get Link", "https://www.smlaccount.com/lr");
-//
-//        listAction.add(uriAction);
-//
-//        ButtonsTemplate buttonsTemplate = new ButtonsTemplate(__imgSmall, "Show", "get more", listAction);
-//        TemplateMessage templateMessage = new TemplateMessage("IMG", buttonsTemplate);
-//        this.reply(replyToken, templateMessage);
-
-//        TextMessage textMessage = new TextMessage("TEXT Message");
-//        this.reply(replyToken, textMessage);
-
-        List<ImagemapAction> ac = new ArrayList<ImagemapAction>();
-
-        ImagemapArea imagemapArea = new ImagemapArea(0,0, 240, 240);
-        URIImagemapAction uriImagemapAction = new URIImagemapAction("https://www.smlaccount.com/assets/register-240.jpg", imagemapArea);
-
-//        MessageImagemapAction messageImagemapAction = new MessageImagemapAction("show text", imagemapArea);
-
-        ac.add(uriImagemapAction);
-//        ac.add(messageImagemapAction);
-
-        ImagemapBaseSize imagemapBaseSize = new ImagemapBaseSize(240, 240);
-        ImagemapMessage imagemapMessage = new ImagemapMessage("https://www.smlaccount.com/assets/register-240.jpg?_ignored=", "regislink", imagemapBaseSize, ac);
-
-        this.reply(replyToken, imagemapMessage);
     }
 
     public String compress(String str) throws IOException {
