@@ -248,12 +248,14 @@ public class LineBotController {
         List<Action> listAction = new ArrayList<Action>();
         URIAction uriAction = new URIAction("Get Link", "https://www.smlaccount.com/lr");
 
-
         listAction.add(uriAction);
 
-        ButtonsTemplate buttonsTemplate = new ButtonsTemplate(__imgSmall, "", "", listAction);
+        ButtonsTemplate buttonsTemplate = new ButtonsTemplate(__imgSmall, "Show", "get more", listAction);
         TemplateMessage templateMessage = new TemplateMessage("IMG", buttonsTemplate);
         this.reply(replyToken, templateMessage);
+
+        TextMessage textMessage = new TextMessage("TEXT Message");
+        this.reply(replyToken, textMessage);
     }
 
     public String compress(String str) throws IOException {
