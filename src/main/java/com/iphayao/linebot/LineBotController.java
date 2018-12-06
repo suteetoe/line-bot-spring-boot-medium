@@ -264,7 +264,7 @@ public class LineBotController {
         List<ImagemapAction> ac = new ArrayList<ImagemapAction>();
 
         ImagemapArea imagemapArea = new ImagemapArea(0,0, 240, 240);
-        URIImagemapAction uriImagemapAction = new URIImagemapAction("https://www.smlaccount.com/lr", imagemapArea);
+        URIImagemapAction uriImagemapAction = new URIImagemapAction("https://www.smlaccount.com/assets/register-240.jpg", imagemapArea);
 
         ac.add(uriImagemapAction);
 
