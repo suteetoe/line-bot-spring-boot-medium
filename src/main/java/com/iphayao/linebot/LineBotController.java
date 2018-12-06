@@ -15,6 +15,10 @@ import com.linecorp.bot.model.event.message.LocationMessageContent;
 import com.linecorp.bot.model.event.message.StickerMessageContent;
 import com.linecorp.bot.model.event.message.TextMessageContent;
 import com.linecorp.bot.model.message.*;
+import com.linecorp.bot.model.message.imagemap.ImagemapAction;
+import com.linecorp.bot.model.message.imagemap.ImagemapArea;
+import com.linecorp.bot.model.message.imagemap.ImagemapBaseSize;
+import com.linecorp.bot.model.message.imagemap.URIImagemapAction;
 import com.linecorp.bot.model.message.template.ButtonsTemplate;
 import com.linecorp.bot.model.response.BotApiResponse;
 import com.linecorp.bot.spring.boot.annotation.EventMapping;
@@ -254,8 +258,20 @@ public class LineBotController {
 //        TemplateMessage templateMessage = new TemplateMessage("IMG", buttonsTemplate);
 //        this.reply(replyToken, templateMessage);
 
-        TextMessage textMessage = new TextMessage("TEXT Message");
-        this.reply(replyToken, textMessage);
+//        TextMessage textMessage = new TextMessage("TEXT Message");
+//        this.reply(replyToken, textMessage);
+
+        List<ImagemapAction> ac = new ArrayList<ImagemapAction>();
+
+        ImagemapArea imagemapArea = new ImagemapArea(0,0, 240, 240);
+        URIImagemapAction uriImagemapAction = new URIImagemapAction("https://www.smlaccount.com/lr", imagemapArea);
+
+        ac.add(uriImagemapAction);
+
+        ImagemapBaseSize imagemapBaseSize = new ImagemapBaseSize(240, 240);
+        ImagemapMessage imagemapMessage = new ImagemapMessage(__imgSmall, "regislink", imagemapBaseSize, ac);
+
+        this.reply(replyToken, imagemapMessage);
     }
 
     public String compress(String str) throws IOException {
